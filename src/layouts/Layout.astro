@@ -1,0 +1,39 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = 'Jadev.cl | Desarrollo de Software a Medida',
+  description = 'Jadev.cl - Desarrollo de software a medida para empresas. Soluciones tecnológicas personalizadas que transforman y optimizan los procesos de tu negocio.'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="desarrollo software, aplicaciones web, aplicaciones móviles, software a medida, desarrollo web Chile" />
+    <meta name="author" content="Jadev.cl" />
+    <title>{title}</title>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jadev.cl/" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://jadev.cl/og-image.jpg" />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://jadev.cl/" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="https://jadev.cl/twitter-image.jpg" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

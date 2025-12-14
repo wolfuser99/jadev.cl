@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import Hero from '../components/Hero';
+import Benefits from '../components/Benefits';
+import Process from '../components/Process';
+import Technologies from '../components/Technologies';
+import Portfolio from '../components/Portfolio';
+import Contact from '../components/Contact';
+import Footer from '../components/Footer';
+import '../index.css';
+---
+
+<Layout>
+  <div class="flex flex-col min-h-screen bg-white">
+    <Header client:load />
+    <main>
+      <Hero client:load />
+      <Benefits client:visible />
+      <Process client:visible />
+      <Technologies client:visible />
+      <Portfolio client:visible />
+      <Contact client:visible />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>
