@@ -1,14 +1,19 @@
-import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
-import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
+import { defineConfig } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
+import react from "@astrojs/react";
+import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server', // Necesario para endpoints y acciones
+  output: "server",
   adapter: cloudflare({
     imageService: "passthrough",
   }),
+  vite: {
+    build: {
+      minify: false,
+    },
+  },
   integrations: [
     react(),
     tailwind({

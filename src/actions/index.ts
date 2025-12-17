@@ -6,7 +6,11 @@ export const server = {
     accept: 'form',
     input: contactSchema,
     handler: async (input, context) => {
-      const db = context.locals.runtime?.env?.DB;
+      // Prefer explicit D1 binding; keep DB as a fallback for local/dev
+      const env = context.locals.runtime?.env as
+        | (typeof context.locals.runtime.env & Cloudflare.Env)
+        | undefined;
+      const db = env?.prod_d1_tutorial ?? env?.DB;
       if (!db) {
         throw new Error('No se encontró la base de datos D1 (binding DB)');
       }

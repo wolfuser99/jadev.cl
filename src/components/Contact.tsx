@@ -13,6 +13,24 @@ const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const extractErrorMessage = (data: unknown): string => {
+    const maybeObject = data as { error?: unknown };
+    const error = maybeObject.error as
+      | string
+      | { fieldErrors?: Record<string, string[]> }
+      | undefined;
+
+    if (error && typeof error === 'object' && 'fieldErrors' in error) {
+      const first = Object.values(error.fieldErrors ?? {})
+        .flat()
+        .find(Boolean);
+      if (first) return first;
+    }
+
+    if (typeof error === 'string') return error;
+    return 'Ocurrió un error al enviar tu solicitud.';
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -34,7 +52,7 @@ const Contact: React.FC = () => {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        const message = (data as { error?: string })?.error ?? 'Ocurrió un error al enviar tu solicitud.';
+        const message = extractErrorMessage(data);
         setStatus('error');
         setErrorMessage(message);
         return;
@@ -227,7 +245,7 @@ const Contact: React.FC = () => {
                   <div>
                     <h4 className="text-lg font-medium text-gray-900">Ubicación</h4>
                     <p className="text-gray-700">
-                      Santiago, Chile
+                      Concepcion, Chile
                     </p>
                   </div>
                 </div>

@@ -2,7 +2,8 @@ import type { APIRoute } from 'astro';
 import { contactSchema } from '../../lib/contactSchema';
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  const db = locals.runtime?.env?.DB;
+  const env = locals.runtime?.env as (typeof locals.runtime.env & Cloudflare.Env) | undefined;
+  const db = env?.prod_d1_tutorial ?? env?.DB;
   if (!db) {
     return new Response(
       JSON.stringify({ ok: false, error: 'DB binding missing' }),
