@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { actions } from 'astro:actions';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -13,20 +14,16 @@ const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const extractErrorMessage = (data: unknown): string => {
-    const maybeObject = data as { error?: unknown };
-    const error = maybeObject.error as
-      | string
-      | { fieldErrors?: Record<string, string[]> }
-      | undefined;
-
-    if (error && typeof error === 'object' && 'fieldErrors' in error) {
-      const first = Object.values(error.fieldErrors ?? {})
+  const extractErrorMessage = (error: unknown): string => {
+    if (error && typeof error === 'object' && 'fields' in error) {
+      const fields = (error as { fields?: Record<string, string[]> }).fields;
+      const first = Object.values(fields ?? {})
         .flat()
         .find(Boolean);
       if (first) return first;
     }
 
+    if (error instanceof Error) return error.message;
     if (typeof error === 'string') return error;
     return 'Ocurrió un error al enviar tu solicitud.';
   };
@@ -36,23 +33,19 @@ const Contact: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
     setErrorMessage(null);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      const form = e.currentTarget;
+      const formDataObj = new FormData(form);
+      
+      const result = await actions.contact(formDataObj);
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const message = extractErrorMessage(data);
+      if (result.error) {
+        const message = extractErrorMessage(result.error);
         setStatus('error');
         setErrorMessage(message);
         return;
