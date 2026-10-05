@@ -16,7 +16,8 @@
 			"binding": "prod_d1_tutorial",
 			"database_name": "prod-d1-tutorial",
 			"database_id": "8b0666f9-a02f-457d-9b55-75ab77761aac",
-			"remote": true
+			"remote": true,
+			"migrations_dir": "../../migrations"
 		}
 	]
 }
